@@ -34,4 +34,4 @@ class Overload:
         f = self.children.get(mangled, None)
         if not f:
             raise UnmatchedError(f"Unmatched call to function {mangled}")
-        f(*args)
+        return f(*args)
