@@ -43,7 +43,7 @@ Traceback (most recent call last):
     add(5.0, 9)
   File "path/to/mod", line 38, in __call__
     raise UnmatchedError(f"Unmatched call to function {mangled}")
-overload.obj.UnmatchedError: Unmatched call to function C2CPL5LfloatPPL3LintP
+overload.exceptions.UnmatchedError: Unmatched call to function C2CPL5LfloatPPL3LintP
 ```
 
 Simple as that
