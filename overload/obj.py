@@ -1,8 +1,6 @@
 from typing_extensions import Callable
+from overload.exceptions import UnmatchedError
 from overload.name_mangling import param_mangle, param_mangle_t
-
-class UnmatchedError(Exception):
-    pass
 
 class FuncNparam:
     def __init__(self, func: Callable, param_t: tuple[type, ...]) -> None:
