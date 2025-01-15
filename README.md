@@ -1,3 +1,10 @@
+A simple (really simple) function overloading implementation for python
+
+Errors may still exist
+
+Usage:
+
+```py
 # Import the overload module (clone the repo and build using setup.py)
 import overload
 # Define a namespace using the namespace decorator
@@ -24,4 +31,25 @@ def add():
 add(5, 7) # int, int
 add(5.0, 2.0) # int, float
 add(5.0, 9) # float, int (undefined)
+```
 
+The output should be something like
+
+```py
+Adding integers a + b=12
+Adding floats a + b=7.0
+Traceback (most recent call last):
+  File "path/to/src", line 19, in <module>
+    add(5.0, 9)
+  File "path/to/mod", line 38, in __call__
+    raise UnmatchedError(f"Unmatched call to function {mangled}")
+overload.obj.UnmatchedError: Unmatched call to function C2CPL5LfloatPPL3LintP
+```
+
+Simple as that
+
+## Installation:
+
+Use setup.py (tutorial all over the internet), it may or may not in PYPI already
+
+(Depends on how lazy I am)
