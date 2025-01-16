@@ -1,3 +1,4 @@
+from typing import Any, Union
 from typing_extensions import Callable
 
 from overload.obj import FuncNparam, Overload
@@ -10,7 +11,7 @@ def overload_namespace(func: Callable[[], list[FuncNparam]]) -> Overload:
                         a list of type FuncNparam")
     return Overload(funcs)
 
-def overload_func(param_t: tuple[type, ...]):
+def overload_func(param_t: tuple[type, ...]=()):
     def decorator(func: Callable):
         return FuncNparam(func, param_t)
     return decorator

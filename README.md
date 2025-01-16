@@ -2,7 +2,12 @@ A simple (really simple) function overloading implementation for python
 
 Errors may still exist. Only supports positional arguments (for now)
 
-Usage:
+## CHANGELOGS: 
+- 1.1.0
+    - Support keywords arguments
+    - Add a markdown documentation
+
+## Usage:
 
 ```py
 # Import the overload module (clone the repo and build using setup.py)
