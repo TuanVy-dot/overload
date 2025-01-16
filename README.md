@@ -1,10 +1,8 @@
 A simple (really simple) function overloading implementation for python
 
-Errors may still exist. Only supports positional arguments (for now)
-
 ## CHANGELOGS: 
 - 1.1.0
-    - Support keywords arguments
+    - Support keywords arguments (kind of)
     - Add a markdown documentation
 
 ## Usage:

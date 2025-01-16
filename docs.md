@@ -75,6 +75,8 @@ overload.exceptions.UnmatchedError: Unmatched call to function signature ('float
 
 As demonstrated, the library correctly dispatches the functions and raises a clear exception when no matching function is found. You can now use overload for clean and efficient function overloading.
 
+Keyword arguments are not part of the signature, and everything passed in the namespace will be passed in the matched function, meaning some workaround can be done, you can add kw arguments by adding them without them being in the signature, the same thing goes when you want to use \*args and \*\*kwargs.
+
 ### Details
 
 Below are the key components within the source code, when you import overload, you only exposed to `api.py` and `exceptions.py`. You can also extend your usage by do some workaround.
