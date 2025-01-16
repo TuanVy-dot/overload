@@ -1,111 +1,139 @@
 # PyOverload Documentation
 
-For more questions or suggestions, contact via tuanvy860@gmail.com
+For any questions or suggestions, please contact us at tuanvy860@gmail.com.
 
-## Table of contents:
+## Table of Contents:
 
-### Getting started
+1. [Getting Started](#getting-started)
 
-`overload` is an easy to use Python function overload implementation if it is any useful for you. The most practical usage for it is to avoid 10000 isinstance check to know what argument combinations call which functions. All you have to do is use some decorators. Here is it in practice:
+2. [Details](#details)
+
+- [obj.py](#objpy)
+
+    - [FuncNparam](#funcnparam)
+
+    - [Overload](#overload)
+
+
+- [name_mangling.py](#name_manglingpy)
+
+- [api.py](#apipy)
+
+- [exceptions.py](#exceptionspy)
+
+Why markdown? Well I'm just too lazy for something better, and markdown is good! The code is fairly simple and this should be sufficient. No docstring in source by the way, I'm sorry.
+
+### Getting Started
+
+overload is an easy-to-use Python function overloading implementation that can help streamline function dispatching based on argument types. This can be particularly useful when you need to avoid writing numerous isinstance checks to determine which function to call based on the argument types. All you need to do is apply a few decorators. Here's a practical example:
 
 ```py
 # Import the overload module (clone the repo and build using setup.py)
 import overload
-# Define a namespace using the namespace decorator
+
+# Define a namespace using the overload_namespace decorator
 @overload.overload_namespace
 def add():
-    # define functions using the overload_func decorator
-    # Along with the types signature (make sure it matches)
+    # Define overloaded functions using the overload_func decorator
+    # Ensure the function signatures match the provided types
     @overload.overload_func((int, int))
     def addii(a, b):
-        print(f"Adding integers {a + b=}")
+        print(f"Adding integers: {a + b}")
 
-    # Repeat
+    # Overload for integer and float
     @overload.overload_func((int, float))
     def addif(a, b):
-        print(f"Adding integer a and float b {a + b=}")
+        print(f"Adding integer and float: {a + b}")
+
+    # Overload for floats
     @overload.overload_func((float, float))
     def addff(a, b):
-        print(f"Adding floats {a + b=}")
+        print(f"Adding floats: {a + b}")
 
-    # Return a list of overload_func decorated functions
+    # Return a list of overloaded functions
     return [addii, addif, addff]
 
-# Call them
-add(5, 7) # int, int
-add(5.0, 2.0) # int, float
-add(5.0, 9) # float, int (undefined)
+# Call the functions with different types
+add(5, 7)      # int, int
+add(5.0, 2.0)  # int, float
+add(5.0, 9)    # float, int (undefined)
 ```
 
-The output should look like:
+The output will be:
 
 ```py
-Adding integers a + b=12
-Adding floats a + b=7.0
+Adding integers: a + b = 12
+Adding floats: a + b = 7.0
 Traceback (most recent call last):
   File "", line 27, in <module>
-    add(5.0, 9) # float, int (undefined)
+    add(5.0, 9)  # float, int (undefined)
     ^^^^^^^^^^^
   File "", line 38, in __call__
     raise UnmatchedError(f"Unmatched call to function signature {tuple(t.__name__ for t in (param_unmangle(mangled)))}")
 overload.exceptions.UnmatchedError: Unmatched call to function signature ('float', 'int')
 ```
 
-As you can see, it dispatched the function all correctly, and also a clear exception on what've gone wrong. And with that you should be able to use it.
+As demonstrated, the library correctly dispatches the functions and raises a clear exception when no matching function is found. You can now use overload for clean and efficient function overloading.
 
 ### Details
 
-Here are details about every piece of code within the source. You are exposed to `api.py` and `exceptions.py` only in `__init__.py`. But you can work around with it to access other pieces.
+Below are the key components within the source code, when you import overload, you only exposed to `api.py` and `exceptions.py`. You can also extend your usage by do some workaround.
 
 #### obj.py
 
-This source contain objects definition, which are `FuncNparam` and `Overload`
+This file contains the definitions of the objects FuncNparam and Overload.
 
 ##### FuncNparam
 
-This class defines objects that contain the `function` object and its signature, that is the type combinations that will invoke it. For example `(int, int)` is a signature.
+The `FuncNparam` class encapsulates a function and its signature, which is a tuple of types that the function will handle. For example, the signature `(int, int)` represents a function that expects two integers.
 
 ##### Overload
 
-This class defines objects of the overloaded namespace, it is the main interface that you will interact with. Its constructor takes a list of `FuncNparam` and adds into its `children` dictionary, which is the container of all overload functions with the keys of mangled name.
+The `Overload` class represents an overloaded namespace. It stores a collection of FuncNparam objects in its `children` dictionary, where the keys are the mangled function names.
 
-It provides add and remove functions:
+It provides methods for adding and removing functions:
+
 ```py
 add_func(self, func: FuncNparam) -> None
 remove_func(self, param_t: tuple[type, ...]) -> None
 ```
-You can add or remove functions using the signature
 
-It also include the `__call__` method, which handles function dispatching and raise UnmatchedError exception.
+These methods allow you to manage functions based on their signatures. The Overload class also includes the `__call__` method, which handles function dispatch and raises an UnmatchedError if no matching function is found.
 
 #### name_mangling.py
 
-Provides 3 functions:
+This module provides three functions for mangling and unmangling function signatures:
+
 ```py
 param_mangle(args: tuple[Any, ...]) -> str
 param_mangle_t(args: tuple[type, ...]) -> str
 param_unmangle(s: str) -> tuple[type, ...]
 ```
 
-Where:
+- `param_mangle_t` generates a unique string based on a function signature (tuple of types) and is used for hashing functions in `Overload`.
 
-- `param_mangle_t` generate a unique string for a signature, it then used in hashing the functions in `Overload`. 
+- `param_mangle` works similarly but processes argument values, used for dispatch matching in `Overload`.
 
-- `param_mangle` do the same thing, except for a tuple of arguments, it is used in `Overload` to match and dispatch.
+- `param_unmangle` reverses the mangling process to retrieve the original function signature from a mangled string. This method assumes the string is valid, so using an incorrect string may result in errors.
 
-- `param_unmangle` revert the process, generate the signature based on the string. Which it assume to be legit, so it might breaks if the string wasn't from mangle functions
 
 #### api.py
 
-The decorator API for overloading
+This module defines the decorator API for overloading functions:
+
 ```py
 overload_namespace(func: Callable[[], list[FuncNparam]]) -> Overload
 overload_func(param_t: tuple[type, ...]=())
 ```
-- `overload_namespace` process the "namespace" function into an `Overload`, the namespace function must return a list of `FuncNparam` else an exception is raised.
 
-- `overload_func` is a wrapper of another decorator, it takes tuple of types as argument and return a decorator that then be call to generate `FuncNparam`
+- `overload_namespace` transforms a "namespace" function into an `Overload` object. The namespace function must return a list of `FuncNparam` objects; otherwise, an exception will be raised.
+
+- `overload_func` is a decorator that takes a tuple of types and returns a decorator to create `FuncNparam` objects for function overloading.
+
 
 #### exceptions.py
 
-Just defines exceptions
+This module defines custom exceptions used in the library.
+
+
+---
