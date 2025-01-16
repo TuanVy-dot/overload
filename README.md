@@ -32,7 +32,7 @@ def add():
 
 # Call them
 add(5, 7) # int, int
-add(5.0, 2.0) # int, float
+add(5.0, 2.0) # float, float
 add(5.0, 9) # float, int (undefined)
 ```
 
