@@ -22,15 +22,6 @@ class Overload:
                 raise TypeError(f"Overload: Expected FuncNParam type")
             self.children[param_mangle_t(func.param_t)] = func.func
 
-    def add_func(self, func: FuncNparam) -> None:
-        self.children[param_mangle_t(func.param_t)] = func.func
-
-    def remove_func(self, param_t: tuple[type, ...]) -> None:
-        for p in param_t:
-            if not isinstance(p, type):
-                raise TypeError(f"Overload: Expected type objects in param")
-        self.children.pop(param_mangle_t(param_t))
-
     def __call__(self, *args, **kwargs):
         mangled = param_mangle(args)
         f = self.children.get(mangled, None)

@@ -38,5 +38,5 @@ class Overload:
         mangled = param_mangle_t(signature)
         f = self.children.get(mangled, None)
         if not f:
-            raise UnmatchedError(f"Unmatched call to function signature {tuple(t.__name__ for t in (param_unmangle(mangled)))}")
+            raise UnmatchedError(f"Unmatched access to function signature {tuple(t.__name__ for t in (param_unmangle(mangled)))}")
         return f

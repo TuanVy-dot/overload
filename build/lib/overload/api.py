@@ -1,4 +1,5 @@
 from typing_extensions import Any, Callable
+from functools import cached_property
 
 from .obj import FuncNparam, Overload
 
@@ -14,15 +15,8 @@ def overload_func(param_t: tuple[type, ...]=()):
     def decorator(func: Callable):
         return FuncNparam(func, param_t)
     return decorator
-#
-# def overload_method(func: Callable[[Any], list[FuncNparam]]) -> Overload:
-#     funcs: list[FuncNparam] = func(None)
-#     if not isinstance(funcs, list):
-#         raise TypeError("Overload: Expected the overload function to return\
-#                         a list of type FuncNparam")
-#     return Overload(funcs)
-#
-def overload_method(func: Callable[[Any], list[FuncNparam]]) -> property:
+
+def overload_method(func: Callable[[Any], list[FuncNparam]]) -> cached_property:
     def getter(self):
         funcs: list[FuncNparam] = func(self)
         if not isinstance(funcs, list):
@@ -39,4 +33,4 @@ def overload_method(func: Callable[[Any], list[FuncNparam]]) -> property:
             
         return Overload(bound_funcs)
     
-    return property(getter)
+    return cached_property(getter)
