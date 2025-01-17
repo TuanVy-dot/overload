@@ -102,6 +102,12 @@ remove_func(self, param_t: tuple[type, ...]) -> None
 
 These methods allow you to manage functions based on their signatures. The Overload class also includes the `__call__` method, which handles function dispatch and raises an UnmatchedError if no matching function is found.
 
+1.2.0: The `__getitem__` or random access `[]` method is added, you can say
+```py
+add[(int, int)](1.0, 2.0)
+```
+to call the add method with signature `(int, int)` for floats. This however is discourage, wrong types usage can cause big errors.
+
 #### name_mangling.py
 
 This module provides three functions for mangling and unmangling function signatures:

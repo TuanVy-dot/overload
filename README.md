@@ -4,6 +4,8 @@ A simple (really simple) function overloading implementation for python
 - 1.1.0
     - Support keywords arguments (kind of)
     - Add a markdown documentation
+- 1.2.0
+    - Add `__getitem__` method in `Overload` to access functions without depends on the arguments type
 
 ## Usage:
 
