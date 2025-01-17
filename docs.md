@@ -21,6 +21,8 @@ For any questions or suggestions, please contact us at tuanvy860@gmail.com.
 
 - [exceptions.py](#exceptionspy)
 
+3. [Classes](#classes)
+
 Why markdown? Well I'm just too lazy for something better, and markdown is good! The code is fairly simple and this should be sufficient. No docstring in source by the way, I'm sorry.
 
 ### Getting Started
@@ -93,20 +95,13 @@ The `FuncNparam` class encapsulates a function and its signature, which is a tup
 
 The `Overload` class represents an overloaded namespace. It stores a collection of FuncNparam objects in its `children` dictionary, where the keys are the mangled function names.
 
-It provides methods for adding and removing functions:
-
-```py
-add_func(self, func: FuncNparam) -> None
-remove_func(self, param_t: tuple[type, ...]) -> None
-```
-
-These methods allow you to manage functions based on their signatures. The Overload class also includes the `__call__` method, which handles function dispatch and raises an UnmatchedError if no matching function is found.
+The Overload class also includes the `__call__` method, which handles function dispatch and raises an UnmatchedError if no matching function is found.
 
 1.2.0: The `__getitem__` or random access `[]` method is added, you can say
 ```py
 add[(int, int)](1.0, 2.0)
 ```
-to call the add method with signature `(int, int)` for floats. This however is discourage, wrong types usage can cause big errors.
+to call the add function with signature `(int, int)` for floats. This however is discourage, wrong types usage can cause big errors.
 
 #### name_mangling.py
 
@@ -132,16 +127,34 @@ This module defines the decorator API for overloading functions:
 ```py
 overload_namespace(func: Callable[[], list[FuncNparam]]) -> Overload
 overload_func(param_t: tuple[type, ...]=())
+overload_method(func: Callable[[Any], list[FuncNparam]]) -> cached_property
 ```
 
 - `overload_namespace` transforms a "namespace" function into an `Overload` object. The namespace function must return a list of `FuncNparam` objects; otherwise, an exception will be raised.
 
 - `overload_func` is a decorator that takes a tuple of types and returns a decorator to create `FuncNparam` objects for function overloading.
 
+- `overload_method` is analogous to `overload_namespace` but for methods, it uses a smart workaround to bounds the self to Overload, because we are not able to bind self to the method using just simple logic as in `overload_namespace`, `cached_property` and a `getter` is used, and it might be slower. For more infomation for in classes usage, see [Classes](#classes).
 
 #### exceptions.py
 
 This module defines custom exceptions used in the library.
 
+
+### Classes
+
+Methods overloading was added in 2.0.0. Providing `overload_method` decorator and is analogous to `overload_namespace`, see [overload_method](#apipy) for some more details.
+
+Example in `examples/in_classes.py`.
+
+To use overloading for methods, use `overload_method` to decorate the top level, then decorate other implementations using `overload_func` the same way as in any functions. Do not forget self as the first argument but do not put it in the signature. You would learn best from examples:
+
+```py
+@overload_func((int, int))
+def func(self, a, b):
+    return a + b
+```
+
+As demonstrated, the function take an additional argument self, but the signature only includes `(int, int)`.
 
 ---

@@ -6,6 +6,9 @@ A simple (really simple) function overloading implementation for python
     - Add a markdown documentation
 - 1.2.0
     - Add `__getitem__` method in `Overload` to access functions without depends on the arguments type
+- 2.0.0
+    - Add support for method overloading
+    - Remove `add_func` and `remove_func`
 
 ## Usage:
 
