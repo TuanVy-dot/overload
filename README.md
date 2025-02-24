@@ -9,6 +9,8 @@ A simple (really simple) function overloading implementation for python
 - 2.0.0
     - Add support for method overloading
     - Remove `add_func` and `remove_func`
+- 2.0.1
+    - Update error message (includes function name in UnmatchedError)
 
 ## Usage:
 
