@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='overload',
-    version='2.0.0',
+    version='2.0.1',
     description='Python function overloading',
     author='ngtv',
     author_email='tuanvy860@gmail.com',

@@ -9,7 +9,7 @@ def overload_namespace(func: Callable[[], list[FuncNparam]]) -> Overload:
     if not isinstance(funcs, list):
         raise TypeError("Overload: Expected the overload function to return\
                         a list of type FuncNparam")
-    return Overload(funcs)
+    return Overload(func.__name__, funcs)
 
 def overload_func(param_t: tuple[type, ...]=()):
     def decorator(func: Callable):
@@ -31,6 +31,6 @@ def overload_method(func: Callable[[Any], list[FuncNparam]]) -> cached_property:
                 return bound_method
             bound_funcs.append(FuncNparam(create_bound_method(f), f.param_t))
             
-        return Overload(bound_funcs)
+        return Overload(func.__name__, bound_funcs)
     
     return cached_property(getter)
