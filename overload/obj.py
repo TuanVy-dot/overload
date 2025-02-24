@@ -15,18 +15,19 @@ class FuncNparam:
         self.param_t: tuple[type, ...] = param_t
 
 class Overload:
-    def __init__(self, funcs: list[FuncNparam]) -> None:
+    def __init__(self, name: str, funcs: list[FuncNparam]) -> None:
         self.children: dict[str, Callable] = {}
         for func in funcs:
             if not isinstance(func, FuncNparam):
                 raise TypeError(f"Overload: Expected FuncNParam type")
             self.children[param_mangle_t(func.param_t)] = func.func
+        self.__name = name;
 
     def __call__(self, *args, **kwargs):
         mangled = param_mangle(args)
         f = self.children.get(mangled, None)
         if not f:
-            raise UnmatchedError(f"Unmatched call to function signature {tuple(t.__name__ for t in (param_unmangle(mangled)))}")
+            raise UnmatchedError(f"Unmatched call to function \'{self.__name}\' with signature {tuple(t.__name__ for t in (param_unmangle(mangled)))}")
         return f(*args, **kwargs)
 
     def __getitem__(self, signature: tuple[type, ...]):
@@ -38,5 +39,5 @@ class Overload:
         mangled = param_mangle_t(signature)
         f = self.children.get(mangled, None)
         if not f:
-            raise UnmatchedError(f"Unmatched access to function signature {tuple(t.__name__ for t in (param_unmangle(mangled)))}")
+            raise UnmatchedError(f"Unmatched access to function \'{self.__name}\' with signature {tuple(t.__name__ for t in (param_unmangle(mangled)))}")
         return f
